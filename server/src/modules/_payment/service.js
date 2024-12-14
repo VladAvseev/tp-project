@@ -11,6 +11,7 @@ const service = {
 
     let workDays = 0;
     let sickLeaveDays = 0;
+    const value = 0;
 
     const dateFinish = new Date(data.dateFinish);
     let tempDate = new Date(data.dateStart);
