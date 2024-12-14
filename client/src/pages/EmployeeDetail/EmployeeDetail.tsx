@@ -21,6 +21,7 @@ const EmployeeDetail = () => {
       try {
         if (!id) return;
         const data = await getEmployeeById(id);
+        console.log(data);
         setEmployee(data);
       } catch (error) {
         console.error("Error loading employee details:", error);
