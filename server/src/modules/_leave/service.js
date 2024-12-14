@@ -8,9 +8,9 @@ const service = {
     return data;
   },
 
-  getById: async (reqData) => {
+  getByEmployee: async (reqData) => {
     const repository = new Repository();
-    const data = await repository.getById(reqData);
+    const data = await repository.getByEmployee(reqData);
     repository.disconnent();
     return data;
   },
@@ -19,21 +19,20 @@ const service = {
     const repository = new Repository();
 
     if (
-      reqData.name === undefined ||
-      reqData.position === undefined ||
-      reqData.salary === undefined ||
-      reqData.status === undefined ||
-      reqData.childs === undefined
+      reqData.employeeId === undefined ||
+      reqData.dateStart === undefined ||
+      reqData.dateFinish === undefined
     ) {
       throw Error("Не заплонены обязательные поля");
     }
 
-    if (reqData.salary < 0) {
-      throw Error("Зарплата не может быть < 0");
-    }
+    const dateStart = new Date(reqData.dateStart);
+    const dateFinish = new Date(reqData.dateFinish);
 
-    if (reqData.childs < 0) {
-      throw Error("Количество детей не может быть < 0");
+    if (dateStart > dateFinish) {
+      throw Error(
+        "Дата начала отгула не может быть позже даты окончания отгула"
+      );
     }
 
     const data = await repository.create(reqData);
@@ -45,21 +44,20 @@ const service = {
     const repository = new Repository();
 
     if (
-      reqData.name === undefined ||
-      reqData.position === undefined ||
-      reqData.salary === undefined ||
-      reqData.status === undefined ||
-      reqData.childs === undefined
+      reqData.employeeId === undefined ||
+      reqData.dateStart === undefined ||
+      reqData.dateFinish === undefined
     ) {
       throw Error("Не заплонены обязательные поля");
     }
 
-    if (reqData.salary < 0) {
-      throw Error("Зарплата не может быть < 0");
-    }
+    const dateStart = new Date(reqData.dateStart);
+    const dateFinish = new Date(reqData.dateFinish);
 
-    if (reqData.childs < 0) {
-      throw Error("Количество детей не может быть < 0");
+    if (dateStart > dateFinish) {
+      throw Error(
+        "Дата начала отгула не может быть позже даты окончания отгула"
+      );
     }
 
     const data = await repository.edit(reqData);
