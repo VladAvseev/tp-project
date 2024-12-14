@@ -92,7 +92,7 @@ const service = {
       );
     }
 
-    const { value, workDays, sickLeaveDays } = this.calcPayment(reqData);
+    const { value, workDays, sickLeaveDays } = await this.calcPayment(reqData);
 
     const data = await repository.create({
       ...reqData,
