@@ -29,7 +29,6 @@ const EmployeeDetail = () => {
         const leavesData = await getLeavesByEmployee(id);
         const bonusesData = await getBonusesByEmployee(id);
         const paymentsData = await getPaymentsByEmployee(id);
-        console.log(paymentsData);
         setEmployee(data);
         setLeaves(leavesData);
         setBonuses(bonusesData);

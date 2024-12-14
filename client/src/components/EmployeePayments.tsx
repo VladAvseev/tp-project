@@ -7,9 +7,15 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  IconButton,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { IPayment } from "../interfaces/Payment.interface";
-import { createPayment, getPaymentsByEmployee } from "../api/payment";
+import {
+  createPayment,
+  getPaymentsByEmployee,
+  deletePayment,
+} from "../api/payment";
 
 interface EmployeePaymentsProps {
   payments: IPayment[];
@@ -39,8 +45,9 @@ const EmployeePayments: React.FC<EmployeePaymentsProps> = ({
   const handleAddPayment = async () => {
     try {
       const formattedPayment = {
-        ...newPayment,
-        employeeId: "1",
+        dateStart: `${newPayment.dateStart}T12:00:00`,
+        dateFinish: `${newPayment.dateFinish}T12:00:00`,
+        employeeId: Number(employeeId),
       };
 
       await createPayment(formattedPayment);
@@ -52,16 +59,26 @@ const EmployeePayments: React.FC<EmployeePaymentsProps> = ({
     }
   };
 
+  const handleDeletePayment = async (id: number) => {
+    try {
+      await deletePayment(String(id));
+      const updatedPayments = await getPaymentsByEmployee(employeeId);
+      setPayments(updatedPayments);
+    } catch (error) {
+      console.error("Error deleting payment:", error);
+    }
+  };
+
   const paymentsColumns: GridColDef<IPayment>[] = [
-    { field: "employeeId", headerName: "Employee ID", flex: 0.2 },
+    { field: "employeeid", headerName: "Employee ID", flex: 0.2 },
     {
-      field: "dateStart",
+      field: "datestart",
       headerName: "Дата начала",
       flex: 0.3,
       renderCell: ({ value }) => new Date(value).toLocaleDateString("ru-RU"),
     },
     {
-      field: "dateFinish",
+      field: "datefinish",
       headerName: "Дата конца",
       flex: 0.3,
       renderCell: ({ value }) => new Date(value).toLocaleDateString("ru-RU"),
@@ -73,14 +90,28 @@ const EmployeePayments: React.FC<EmployeePaymentsProps> = ({
       renderCell: ({ value }) => `${value.toLocaleString("ru-RU")} ₽`,
     },
     {
-      field: "workDays",
+      field: "workdays",
       headerName: "Рабочие дни",
       flex: 0.15,
     },
     {
-      field: "sickLeaveDays",
+      field: "sickleavedays",
       headerName: "Больничные дни",
       flex: 0.15,
+    },
+    {
+      field: "actions",
+      headerName: "Действия",
+      flex: 0.3,
+      sortable: false,
+      renderCell: (params) => (
+        <IconButton
+          color="error"
+          onClick={() => handleDeletePayment(params.row.id)}
+        >
+          <DeleteIcon />
+        </IconButton>
+      ),
     },
   ];
 

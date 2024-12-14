@@ -107,7 +107,7 @@ const EmployeeLeaves: React.FC<EmployeeLeavesProps> = ({
         </Button>
       </div>
 
-      <DataGrid rows={leaves} columns={leavesColumns} autoHeight />
+      <DataGrid rows={leaves} columns={leavesColumns} />
       <Dialog
         open={openDialog}
         onClose={handleDialogClose}
