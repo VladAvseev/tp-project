@@ -51,7 +51,6 @@ const EmployeeDetail = () => {
       <Typography variant="body1">Статус: {employee.status}</Typography>
       <Typography variant="body1">Дети: {employee.childs}</Typography>
 
-      {/* Вкладки */}
       <Tabs value={value} onChange={handleChange} aria-label="employee tabs">
         <Tab label="Больничные" />
         <Tab label="Премии" />
@@ -59,7 +58,6 @@ const EmployeeDetail = () => {
         <Tab label="Редактировать" />
       </Tabs>
 
-      {/* Контент вкладок */}
       {value === 0 && <div>Данные по больничным</div>}
       {value === 1 && <div>Данные по премиям</div>}
       {value === 2 && <div>Данные об отчетах о выплатах</div>}

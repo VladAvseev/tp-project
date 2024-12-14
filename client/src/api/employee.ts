@@ -3,7 +3,7 @@ import { IEmployee } from "../interfaces/Employee";
 
 export const getEmployees = async () => {
   try {
-    const response = await axios.get<IEmployee[]>("/api/employee/get");
+    const response = await axios.get<IEmployee[]>("/api/leave/get_by_empl");
     return response.data;
   } catch (error) {
     console.error("Error fetching employees:", error);
