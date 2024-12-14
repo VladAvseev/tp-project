@@ -12,3 +12,17 @@ export const getLeavesByEmployee = async (id: string) => {
     throw error;
   }
 };
+
+export const addLeave = async (leave: {
+  dateStart: string;
+  dateFinish: string;
+  employeeId: string;
+}) => {
+  try {
+    const response = await axios.post<ILeave>("/api/leave/create", leave);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding leave:", error);
+    throw error;
+  }
+};
