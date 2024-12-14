@@ -43,7 +43,7 @@ const service = {
         }
       });
 
-      leaves.tempDate.setDate(tempDate.getDate + 1);
+      tempDate = new Date(leaves.tempDate.getTime() + 24 * 60 * 60 * 1000);
     }
 
     value +=
