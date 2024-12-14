@@ -26,3 +26,12 @@ export const addLeave = async (leave: {
     throw error;
   }
 };
+
+export const deleteLeave = async (id: string) => {
+  try {
+    const response = await axios.post(`/api/leave/delete`, { id });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting leave:", error);
+  }
+};

@@ -7,9 +7,11 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  IconButton,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { ILeave } from "../interfaces/Leave.interface";
-import { addLeave, getLeavesByEmployee } from "../api/leave";
+import { addLeave, getLeavesByEmployee, deleteLeave } from "../api/leave";
 
 interface EmployeeLeavesProps {
   employeeId: string;
@@ -39,8 +41,8 @@ const EmployeeLeaves: React.FC<EmployeeLeavesProps> = ({
   const handleAddLeave = async () => {
     try {
       const formattedLeave = {
-        dateStart: `${newLeave.dateStart}T00:00:00`,
-        dateFinish: `${newLeave.dateFinish}T00:00:00`,
+        dateStart: `${newLeave.dateStart}T12:00:00`,
+        dateFinish: `${newLeave.dateFinish}T12:00:00`,
       };
 
       await addLeave({ ...formattedLeave, employeeId });
@@ -49,6 +51,16 @@ const EmployeeLeaves: React.FC<EmployeeLeavesProps> = ({
       handleDialogClose();
     } catch (error) {
       console.error("Error adding leave:", error);
+    }
+  };
+
+  const handleDeleteLeave = async (id: string) => {
+    try {
+      await deleteLeave(id);
+      const updatedLeaves = await getLeavesByEmployee(employeeId);
+      setLeaves(updatedLeaves);
+    } catch (error) {
+      console.error("Error deleting leave:", error);
     }
   };
 
@@ -66,6 +78,20 @@ const EmployeeLeaves: React.FC<EmployeeLeavesProps> = ({
       flex: 0.4,
       renderCell: ({ value }) => new Date(value).toLocaleDateString("ru-RU"),
     },
+    {
+      field: "actions",
+      headerName: "Действия",
+      flex: 0.3,
+      sortable: false,
+      renderCell: (params) => (
+        <IconButton
+          color="error"
+          onClick={() => handleDeleteLeave(String(params.row.id))}
+        >
+          <DeleteIcon />
+        </IconButton>
+      ),
+    },
   ];
 
   return (
@@ -81,7 +107,7 @@ const EmployeeLeaves: React.FC<EmployeeLeavesProps> = ({
         </Button>
       </div>
 
-      <DataGrid rows={leaves} columns={leavesColumns} />
+      <DataGrid rows={leaves} columns={leavesColumns} autoHeight />
       <Dialog
         open={openDialog}
         onClose={handleDialogClose}
