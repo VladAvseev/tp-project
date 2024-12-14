@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridRowParams } from "@mui/x-data-grid";
 import { Container, Typography } from "@mui/material";
 import { getEmployees } from "../../api/employee";
+import { useNavigate } from "react-router-dom";
+import { IEmployee } from "../../interfaces/Employee";
 
 const Employees = () => {
   const [rows, setRows] = useState([]);
+
+  const navigate = useNavigate();
+
+  const handleRowClick = (row: IEmployee) => {
+    navigate(`/employee/${row.id}`);
+  };
 
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
         const data = await getEmployees();
-        setRows(data);
+        setRows(data as never);
       } catch (error) {
         console.error("Error loading employees:", error);
       }
@@ -34,7 +42,13 @@ const Employees = () => {
         Список сотрудников
       </Typography>
       <div className="w-full grow">
-        <DataGrid rows={rows} columns={columns} />
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          onRowClick={(params: GridRowParams<IEmployee>) =>
+            handleRowClick(params.row)
+          }
+        />
       </div>
     </Container>
   );
