@@ -1,21 +1,21 @@
 const Repository = require("./repository");
 
 const service = {
-  get: async () => {
+  async get() {
     const repository = new Repository();
     const data = await repository.get();
     repository.disconnent();
     return data;
   },
 
-  getById: async (reqData) => {
+  async getById(reqData) {
     const repository = new Repository();
     const data = await repository.getById(reqData);
     repository.disconnent();
     return data;
   },
 
-  create: async (reqData) => {
+  async create(reqData) {
     const repository = new Repository();
 
     if (
@@ -41,7 +41,7 @@ const service = {
     return data;
   },
 
-  edit: async (reqData) => {
+  async edit(reqData) {
     const repository = new Repository();
 
     if (
@@ -67,7 +67,7 @@ const service = {
     return data;
   },
 
-  delete: async (reqData) => {
+  async delete(reqData) {
     const repository = new Repository();
     const data = await repository.delete(reqData);
     repository.disconnent();
