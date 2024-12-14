@@ -3,7 +3,7 @@ import { DataGrid, GridRowParams } from "@mui/x-data-grid";
 import { Container, Typography } from "@mui/material";
 import { getEmployees } from "../../api/employee";
 import { useNavigate } from "react-router-dom";
-import { IEmployee } from "../../interfaces/Employee";
+import { IEmployee } from "../../interfaces/Employee.interface";
 
 const Employees = () => {
   const [rows, setRows] = useState([]);

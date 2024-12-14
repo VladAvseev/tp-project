@@ -1,9 +1,11 @@
 import axios from "../services/api";
-import { IEmployee } from "../interfaces/Employee";
+import { ILeave } from "../interfaces/Leave.interface";
 
-export const getEmployees = async () => {
+export const getLeavesByEmployee = async (id: string) => {
   try {
-    const response = await axios.get<IEmployee[]>("/api/employee/get");
+    const response = await axios.post<ILeave[]>("/api/leave/get_by_employee", {
+      employeeId: id,
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching employees:", error);

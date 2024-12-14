@@ -1,19 +1,16 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { getEmployeeById } from "../../api/employee";
-import {
-  Container,
-  Typography,
-  Tabs,
-  Tab,
-  TextField,
-  Button,
-} from "@mui/material";
-import { IEmployee } from "../../interfaces/Employee";
+import { getLeavesByEmployee } from "../../api/leave";
+import { Container, Typography, Tabs, Tab } from "@mui/material";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { ILeave } from "../../interfaces/Leave.interface";
+import { IEmployee } from "../../interfaces/Employee.interface";
 
 const EmployeeDetail = () => {
   const { id } = useParams();
   const [employee, setEmployee] = React.useState<IEmployee | null>(null);
+  const [leaves, setLeaves] = React.useState<ILeave[]>([]);
   const [value, setValue] = React.useState<number>(0);
 
   React.useEffect(() => {
@@ -21,8 +18,9 @@ const EmployeeDetail = () => {
       try {
         if (!id) return;
         const data = await getEmployeeById(id);
-        console.log(data);
+        const leavesData = await getLeavesByEmployee(id);
         setEmployee(data);
+        setLeaves(leavesData);
       } catch (error) {
         console.error("Error loading employee details:", error);
       }
@@ -34,6 +32,26 @@ const EmployeeDetail = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  const leavesColumns: GridColDef<ILeave>[] = [
+    {
+      field: "id",
+      headerName: "ID",
+      flex: 0.2,
+    },
+    {
+      field: "datestart",
+      headerName: "Начало",
+      flex: 0.4,
+      renderCell: ({ value }) => new Date(value).toLocaleDateString("ru-RU"),
+    },
+    {
+      field: "datefinish",
+      headerName: "Конец",
+      flex: 0.4,
+      renderCell: ({ value }) => new Date(value).toLocaleDateString("ru-RU"),
+    },
+  ];
 
   if (!employee) {
     return <div>Loading...</div>;
@@ -58,62 +76,17 @@ const EmployeeDetail = () => {
         <Tab label="Редактировать" />
       </Tabs>
 
-      {value === 0 && <div>Данные по больничным</div>}
+      {value === 0 && (
+        <div>
+          <DataGrid rows={leaves} columns={leavesColumns} />
+        </div>
+      )}
       {value === 1 && <div>Данные по премиям</div>}
       {value === 2 && <div>Данные об отчетах о выплатах</div>}
       {value === 3 && (
         <div>
           <Typography variant="body1">Редактировать информацию</Typography>
-          <form>
-            <TextField
-              label="Имя"
-              name="name"
-              value={employee.name || ""}
-              fullWidth
-              margin="normal"
-              disabled
-            />
-            <TextField
-              label="Должность"
-              name="position"
-              value={employee.position || ""}
-              fullWidth
-              margin="normal"
-              disabled
-            />
-            <TextField
-              label="Зарплата"
-              name="salary"
-              value={employee.salary || ""}
-              fullWidth
-              margin="normal"
-              disabled
-            />
-            <TextField
-              label="Статус"
-              name="status"
-              value={employee.status || ""}
-              fullWidth
-              margin="normal"
-              disabled
-            />
-            <TextField
-              label="Дети"
-              name="childs"
-              value={employee.childs || ""}
-              fullWidth
-              margin="normal"
-              disabled
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              sx={{ mt: 2 }}
-            >
-              Сохранить изменения
-            </Button>
-          </form>
+          <form>{/* форма для редактирования */}</form>
         </div>
       )}
     </Container>

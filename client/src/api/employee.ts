@@ -1,5 +1,5 @@
 import axios from "../services/api";
-import { IEmployee } from "../interfaces/Employee";
+import { IEmployee } from "../interfaces/Employee.interface";
 
 export const getEmployees = async () => {
   try {
