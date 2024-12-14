@@ -6,11 +6,15 @@ import { Container, Typography, Tabs, Tab } from "@mui/material";
 import { ILeave } from "../../interfaces/Leave.interface";
 import { IEmployee } from "../../interfaces/Employee.interface";
 import EmployeeLeaves from "../../components/EmployeeLeaves";
+import { getBonusesByEmployee } from "../../api/bonus";
+import EmployeeBonuses from "../../components/EmployeeBonuses";
+import { IBonus } from "../../interfaces/Bonus.interface";
 
 const EmployeeDetail = () => {
   const { id } = useParams();
   const [employee, setEmployee] = React.useState<IEmployee | null>(null);
   const [leaves, setLeaves] = React.useState<ILeave[]>([]);
+  const [bonuses, setBonuses] = React.useState<IBonus[]>([]);
   const [value, setValue] = React.useState<number>(0);
 
   React.useEffect(() => {
@@ -19,8 +23,10 @@ const EmployeeDetail = () => {
         if (!id) return;
         const data = await getEmployeeById(id);
         const leavesData = await getLeavesByEmployee(id);
+        const bonusesData = await getBonusesByEmployee(id);
         setEmployee(data);
         setLeaves(leavesData);
+        setBonuses(bonusesData);
       } catch (error) {
         console.error("Error loading employee details:", error);
       }
@@ -63,7 +69,13 @@ const EmployeeDetail = () => {
           setLeaves={setLeaves}
         />
       )}
-      {value === 1 && <div>Данные по премиям</div>}
+      {value === 1 && (
+        <EmployeeBonuses
+          setBonuses={setBonuses}
+          bonuses={bonuses}
+          employeeId={id!}
+        />
+      )}
       {value === 2 && <div>Данные об отчетах о выплатах</div>}
       {value === 3 && (
         <div>
