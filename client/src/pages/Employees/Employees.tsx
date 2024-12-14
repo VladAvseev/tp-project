@@ -11,7 +11,7 @@ const Employees = () => {
   const navigate = useNavigate();
 
   const handleRowClick = (row: IEmployee) => {
-    navigate(`/employee/${row.id}`);
+    navigate(`/employees/${row.id}`);
   };
 
   useEffect(() => {
