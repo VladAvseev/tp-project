@@ -9,12 +9,16 @@ import EmployeeLeaves from "../../components/EmployeeLeaves";
 import { getBonusesByEmployee } from "../../api/bonus";
 import EmployeeBonuses from "../../components/EmployeeBonuses";
 import { IBonus } from "../../interfaces/Bonus.interface";
+import { getPaymentsByEmployee } from "../../api/payment";
+import EmployeePayments from "../../components/EmployeePayments";
+import { IPayment } from "../../interfaces/Payment.interface";
 
 const EmployeeDetail = () => {
   const { id } = useParams();
   const [employee, setEmployee] = React.useState<IEmployee | null>(null);
   const [leaves, setLeaves] = React.useState<ILeave[]>([]);
   const [bonuses, setBonuses] = React.useState<IBonus[]>([]);
+  const [payments, setPayments] = React.useState<IPayment[]>([]);
   const [value, setValue] = React.useState<number>(0);
 
   React.useEffect(() => {
@@ -24,9 +28,12 @@ const EmployeeDetail = () => {
         const data = await getEmployeeById(id);
         const leavesData = await getLeavesByEmployee(id);
         const bonusesData = await getBonusesByEmployee(id);
+        const paymentsData = await getPaymentsByEmployee(id);
+        console.log(paymentsData);
         setEmployee(data);
         setLeaves(leavesData);
         setBonuses(bonusesData);
+        setPayments(paymentsData);
       } catch (error) {
         console.error("Error loading employee details:", error);
       }
@@ -76,7 +83,13 @@ const EmployeeDetail = () => {
           employeeId={id!}
         />
       )}
-      {value === 2 && <div>Данные об отчетах о выплатах</div>}
+      {value === 2 && (
+        <EmployeePayments
+          setPayments={setPayments}
+          payments={payments}
+          employeeId={id!}
+        />
+      )}
       {value === 3 && (
         <div>
           <Typography variant="body1">Редактировать информацию</Typography>
