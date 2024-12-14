@@ -7,7 +7,9 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  IconButton,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { IPayment } from "../interfaces/Payment.interface";
 import {
   createPayment,
@@ -57,6 +59,16 @@ const EmployeePayments: React.FC<EmployeePaymentsProps> = ({
     }
   };
 
+  const handleDeletePayment = async (id: number) => {
+    try {
+      await deletePayment(String(id));
+      const updatedPayments = await getPaymentsByEmployee(employeeId);
+      setPayments(updatedPayments);
+    } catch (error) {
+      console.error("Error deleting payment:", error);
+    }
+  };
+
   const paymentsColumns: GridColDef<IPayment>[] = [
     { field: "employeeid", headerName: "Employee ID", flex: 0.2 },
     {
@@ -86,6 +98,20 @@ const EmployeePayments: React.FC<EmployeePaymentsProps> = ({
       field: "sickleavedays",
       headerName: "Больничные дни",
       flex: 0.15,
+    },
+    {
+      field: "actions",
+      headerName: "Действия",
+      flex: 0.3,
+      sortable: false,
+      renderCell: (params) => (
+        <IconButton
+          color="error"
+          onClick={() => handleDeletePayment(params.row.id)}
+        >
+          <DeleteIcon />
+        </IconButton>
+      ),
     },
   ];
 
