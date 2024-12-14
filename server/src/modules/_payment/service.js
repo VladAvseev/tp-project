@@ -4,7 +4,7 @@ const leaveService = require("../_leave/service");
 const bonusService = require("../_bonus/service");
 
 const service = {
-  calcPayment: async (data) => {
+  async calcPayment(data) {
     const [employee] = await employeeService.getById(data.employeeId);
     const leaves = await leaveService.getByEmployee(data.employeeId);
     const bonuses = await bonusService.getByEmployee(data.employeeId);
@@ -57,21 +57,21 @@ const service = {
     };
   },
 
-  get: async () => {
+  async get() {
     const repository = new Repository();
     const data = await repository.get();
     repository.disconnent();
     return data;
   },
 
-  getByEmployee: async (reqData) => {
+  async getByEmployee(reqData) {
     const repository = new Repository();
     const data = await repository.getByEmployee(reqData);
     repository.disconnent();
     return data;
   },
 
-  create: async (reqData) => {
+  async create(reqData) {
     const repository = new Repository();
 
     if (
@@ -103,7 +103,7 @@ const service = {
     return data;
   },
 
-  delete: async (reqData) => {
+  async delete(reqData) {
     const repository = new Repository();
     const data = await repository.delete(reqData);
     repository.disconnent();
