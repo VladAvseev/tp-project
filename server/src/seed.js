@@ -9,6 +9,7 @@ pool.query(
   `
 	drop table if exists leave;
 	drop table if exists bonus;
+	drop table if exists payment; 
 	drop table if exists employee; 
 
 	create table employee (
@@ -32,6 +33,16 @@ pool.query(
 		employeeId integer not null references employee(id),
 		value integer not null,
 		date DATE not null
+	);
+	
+		create table payment (
+		id serial PRIMARY KEY,
+		employeeId integer not null references employee(id),
+		dateStart DATE not null,
+		dateFinish DATE not null,
+		value integer not null,
+		workDays integer not null,
+		sickLeaveDays integer not null
 	);
 
 	insert into employee(name, position, salary, status, childs) values

@@ -42,6 +42,10 @@ const service = {
       throw Error("Не заплонены обязательные поля");
     }
 
+    if (reqData.value <= 0) {
+      throw Error("Премия не може быть отрицательной");
+    }
+
     const data = await repository.edit(reqData);
     repository.disconnent();
     return data;

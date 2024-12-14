@@ -14,7 +14,7 @@ class Repository {
 
   async get() {
     const query = `
-			SELECT * from leave;
+			SELECT * from payment;
 		`;
     const data = await this.pool.query(query);
     return data.rows;
@@ -22,8 +22,8 @@ class Repository {
 
   async getByEmployee(reqData) {
     const query = `
-			SELECT * from leave
-			WHERE leave.employeeId = '${reqData.employeeId}';
+			SELECT * from payment
+			WHERE payment.employeeId = '${reqData.employeeId}';
 		`;
     const data = await this.pool.query(query);
     return data.rows;
@@ -31,27 +31,17 @@ class Repository {
 
   async create(reqData) {
     const query = `
-			INSERT INTO leave(employeeId, dateStart, dateFinish) 
-			VALUES ('${reqData.employeeId}', '${reqData.dateStart}', '${reqData.dateFinish}') 
+			INSERT INTO payment(employeeId, dateStart, dateFinish, value, workDays, sickLeaveDays) 
+			VALUES ('${reqData.employeeId}', '${reqData.dateStart}', '${reqData.dateFinish}', '${reqData.value}', '${reqData.workDays}', '${reqData.sickLeaveDays}') 
 			RETURNING *;
 		`;
     const data = await this.pool.query(query);
     return data.rows;
   }
 
-  async edit(reqData) {
-    const query = `
-			UPDATE leave 
-			SET dateStart = '${reqData.dateStart}', dateFinish = '${reqData.dateFinish}'
-			WHERE id = '${reqData.id}' 
-			RETURNING *;`;
-    const data = await this.pool.query(query);
-    return data.rows;
-  }
-
   async delete(reqData) {
     const query = `
-			DELETE FROM leave 
+			DELETE FROM payment 
 			WHERE id = '${reqData.id}' 
 			RETURNING *;`;
     const data = await this.pool.query(query);
