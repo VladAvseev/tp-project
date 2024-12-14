@@ -14,7 +14,7 @@ const controller = {
     try {
       const reqData = req.body;
       const data = await service.getById(reqData);
-      res.json(data);
+      res.json(data[0]);
     } catch (e) {
       res.status(500).send({ message: e.message });
     }
