@@ -1,19 +1,24 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { getEmployeeById } from "../../api/employee";
-import {
-  Container,
-  Typography,
-  Tabs,
-  Tab,
-  TextField,
-  Button,
-} from "@mui/material";
-import { IEmployee } from "../../interfaces/Employee";
+import { getLeavesByEmployee } from "../../api/leave";
+import { Container, Typography, Tabs, Tab } from "@mui/material";
+import { ILeave } from "../../interfaces/Leave.interface";
+import { IEmployee } from "../../interfaces/Employee.interface";
+import EmployeeLeaves from "../../components/EmployeeLeaves";
+import { getBonusesByEmployee } from "../../api/bonus";
+import EmployeeBonuses from "../../components/EmployeeBonuses";
+import { IBonus } from "../../interfaces/Bonus.interface";
+import { getPaymentsByEmployee } from "../../api/payment";
+import EmployeePayments from "../../components/EmployeePayments";
+import { IPayment } from "../../interfaces/Payment.interface";
 
 const EmployeeDetail = () => {
   const { id } = useParams();
   const [employee, setEmployee] = React.useState<IEmployee | null>(null);
+  const [leaves, setLeaves] = React.useState<ILeave[]>([]);
+  const [bonuses, setBonuses] = React.useState<IBonus[]>([]);
+  const [payments, setPayments] = React.useState<IPayment[]>([]);
   const [value, setValue] = React.useState<number>(0);
 
   React.useEffect(() => {
@@ -21,8 +26,14 @@ const EmployeeDetail = () => {
       try {
         if (!id) return;
         const data = await getEmployeeById(id);
-        console.log(data);
+        const leavesData = await getLeavesByEmployee(id);
+        const bonusesData = await getBonusesByEmployee(id);
+        const paymentsData = await getPaymentsByEmployee(id);
+        console.log(paymentsData);
         setEmployee(data);
+        setLeaves(leavesData);
+        setBonuses(bonusesData);
+        setPayments(paymentsData);
       } catch (error) {
         console.error("Error loading employee details:", error);
       }
@@ -51,7 +62,6 @@ const EmployeeDetail = () => {
       <Typography variant="body1">Статус: {employee.status}</Typography>
       <Typography variant="body1">Дети: {employee.childs}</Typography>
 
-      {/* Вкладки */}
       <Tabs value={value} onChange={handleChange} aria-label="employee tabs">
         <Tab label="Больничные" />
         <Tab label="Премии" />
@@ -59,63 +69,31 @@ const EmployeeDetail = () => {
         <Tab label="Редактировать" />
       </Tabs>
 
-      {/* Контент вкладок */}
-      {value === 0 && <div>Данные по больничным</div>}
-      {value === 1 && <div>Данные по премиям</div>}
-      {value === 2 && <div>Данные об отчетах о выплатах</div>}
+      {value === 0 && (
+        <EmployeeLeaves
+          employeeId={id!}
+          leaves={leaves}
+          setLeaves={setLeaves}
+        />
+      )}
+      {value === 1 && (
+        <EmployeeBonuses
+          setBonuses={setBonuses}
+          bonuses={bonuses}
+          employeeId={id!}
+        />
+      )}
+      {value === 2 && (
+        <EmployeePayments
+          setPayments={setPayments}
+          payments={payments}
+          employeeId={id!}
+        />
+      )}
       {value === 3 && (
         <div>
           <Typography variant="body1">Редактировать информацию</Typography>
-          <form>
-            <TextField
-              label="Имя"
-              name="name"
-              value={employee.name || ""}
-              fullWidth
-              margin="normal"
-              disabled
-            />
-            <TextField
-              label="Должность"
-              name="position"
-              value={employee.position || ""}
-              fullWidth
-              margin="normal"
-              disabled
-            />
-            <TextField
-              label="Зарплата"
-              name="salary"
-              value={employee.salary || ""}
-              fullWidth
-              margin="normal"
-              disabled
-            />
-            <TextField
-              label="Статус"
-              name="status"
-              value={employee.status || ""}
-              fullWidth
-              margin="normal"
-              disabled
-            />
-            <TextField
-              label="Дети"
-              name="childs"
-              value={employee.childs || ""}
-              fullWidth
-              margin="normal"
-              disabled
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              sx={{ mt: 2 }}
-            >
-              Сохранить изменения
-            </Button>
-          </form>
+          <form>{/* форма для редактирования */}</form>
         </div>
       )}
     </Container>
