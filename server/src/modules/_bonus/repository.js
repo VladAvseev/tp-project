@@ -17,7 +17,7 @@ class Repository {
 			SELECT * from bonus;
 		`;
     const data = await this.pool.query(query);
-    return data.rows[0];
+    return data.rows;
   }
 
   async getByEmployee(reqData) {
@@ -26,7 +26,7 @@ class Repository {
 			WHERE bonus.employeeId = '${reqData.employeeId}';
 		`;
     const data = await this.pool.query(query);
-    return data.rows[0];
+    return data.rows;
   }
 
   async create(reqData) {
@@ -36,7 +36,7 @@ class Repository {
 			RETURNING *;
 		`;
     const data = await this.pool.query(query);
-    return data.rows[0];
+    return data.rows;
   }
 
   async edit(reqData) {
@@ -46,7 +46,7 @@ class Repository {
 			WHERE id = '${reqData.id}' 
 			RETURNING *;`;
     const data = await this.pool.query(query);
-    return data.rows[0];
+    return data.rows;
   }
 
   async delete(reqData) {
@@ -55,7 +55,7 @@ class Repository {
 			WHERE id = '${reqData.id}' 
 			RETURNING *;`;
     const data = await this.pool.query(query);
-    return data.rows[0];
+    return data.rows;
   }
 }
 module.exports = Repository;

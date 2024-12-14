@@ -32,6 +32,8 @@ pool.connect((err, client, done) => {
   }
 });
 
+pool.end();
+
 // Define your routes and CRUD operations here
 app.use("/api", rootRouter);
 
