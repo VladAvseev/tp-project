@@ -5,9 +5,9 @@ const bonusService = require("../_bonus/service");
 
 const service = {
   async calcPayment(data) {
-    const [employee] = await employeeService.getById(data.employeeId);
-    const leaves = await leaveService.getByEmployee(data.employeeId);
-    const bonuses = await bonusService.getByEmployee(data.employeeId);
+    const [employee] = await employeeService.getById({ id: data.employeeId });
+    const leaves = await leaveService.getByEmployee(data);
+    const bonuses = await bonusService.getByEmployee(data);
 
     let workDays = 0;
     let sickLeaveDays = 0;
