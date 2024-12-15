@@ -1,8 +1,15 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { getEmployeeById } from "../../api/employee";
+import { getEmployeeById, updateEmployee } from "../../api/employee";
 import { getLeavesByEmployee } from "../../api/leave";
-import { Container, Typography, Tabs, Tab } from "@mui/material";
+import {
+  Container,
+  Typography,
+  Tabs,
+  Tab,
+  TextField,
+  Button,
+} from "@mui/material";
 import { ILeave } from "../../interfaces/Leave.interface";
 import { IEmployee } from "../../interfaces/Employee.interface";
 import EmployeeLeaves from "../../components/EmployeeLeaves";
@@ -20,6 +27,7 @@ const EmployeeDetail = () => {
   const [bonuses, setBonuses] = React.useState<IBonus[]>([]);
   const [payments, setPayments] = React.useState<IPayment[]>([]);
   const [value, setValue] = React.useState<number>(0);
+  const [formValues, setFormValues] = React.useState<IEmployee | null>(null);
 
   React.useEffect(() => {
     const fetchEmployee = async () => {
@@ -33,6 +41,7 @@ const EmployeeDetail = () => {
         setLeaves(leavesData);
         setBonuses(bonusesData);
         setPayments(paymentsData);
+        setFormValues(data); // Устанавливаем начальные значения формы
       } catch (error) {
         console.error("Error loading employee details:", error);
       }
@@ -43,6 +52,25 @@ const EmployeeDetail = () => {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormValues((prev) => ({
+      ...prev!,
+      [name]: name === "salary" || name === "childs" ? Number(value) : value,
+    }));
+  };
+
+  const handleUpdateEmployee = async () => {
+    try {
+      if (formValues) {
+        await updateEmployee({ ...formValues, id: String(formValues.id) });
+        setEmployee(formValues);
+      }
+    } catch (error) {
+      console.error("Error updating employee:", error);
+    }
   };
 
   if (!employee) {
@@ -92,7 +120,53 @@ const EmployeeDetail = () => {
       {value === 3 && (
         <div>
           <Typography variant="body1">Редактировать информацию</Typography>
-          <form>{/* форма для редактирования */}</form>
+          <form>
+            <TextField
+              label="ФИО"
+              name="name"
+              value={formValues?.name || ""}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Должность"
+              name="position"
+              value={formValues?.position || ""}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Зарплата"
+              name="salary"
+              value={formValues?.salary || ""}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              type="number"
+            />
+            <TextField
+              label="Статус"
+              name="status"
+              value={formValues?.status || ""}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Дети"
+              name="childs"
+              value={formValues?.childs || ""}
+              onChange={handleInputChange}
+              fullWidth
+              margin="normal"
+              type="number"
+            />
+            <Button onClick={handleUpdateEmployee} color="primary">
+              Обновить
+            </Button>
+          </form>
         </div>
       )}
     </Container>

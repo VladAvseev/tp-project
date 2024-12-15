@@ -41,3 +41,23 @@ export const createEmployee = async (employee: {
     throw error;
   }
 };
+
+export const updateEmployee = async (employee: {
+  id: string;
+  name: string;
+  position: string;
+  salary: number;
+  status: string;
+  childs: number;
+}) => {
+  try {
+    const response = await axios.post<IEmployee>(
+      "/api/employee/edit",
+      employee,
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating employee:`, error);
+    throw error;
+  }
+};
