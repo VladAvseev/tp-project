@@ -22,3 +22,22 @@ export const getEmployeeById = async (id: string) => {
     throw error;
   }
 };
+
+export const createEmployee = async (employee: {
+  name: string;
+  position: string;
+  salary: number;
+  status: string;
+  childs: number;
+}) => {
+  try {
+    const response = await axios.post<IEmployee>(
+      `/api/employee/create`,
+      employee,
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error creating employee:`, error);
+    throw error;
+  }
+};
