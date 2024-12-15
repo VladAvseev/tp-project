@@ -61,3 +61,15 @@ export const updateEmployee = async (employee: {
     throw error;
   }
 };
+
+export const deleteEmployee = async (employeeId: string) => {
+  try {
+    const response = await axios.post("/api/employee/delete", {
+      id: employeeId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting employee:`, error);
+    throw error;
+  }
+};

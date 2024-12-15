@@ -1,6 +1,10 @@
 import React from "react";
-import { useParams } from "react-router-dom";
-import { getEmployeeById, updateEmployee } from "../../api/employee";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  getEmployeeById,
+  updateEmployee,
+  deleteEmployee,
+} from "../../api/employee";
 import { getLeavesByEmployee } from "../../api/leave";
 import {
   Container,
@@ -9,6 +13,11 @@ import {
   Tab,
   TextField,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import { ILeave } from "../../interfaces/Leave.interface";
 import { IEmployee } from "../../interfaces/Employee.interface";
@@ -22,12 +31,14 @@ import { IPayment } from "../../interfaces/Payment.interface";
 
 const EmployeeDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [employee, setEmployee] = React.useState<IEmployee | null>(null);
   const [leaves, setLeaves] = React.useState<ILeave[]>([]);
   const [bonuses, setBonuses] = React.useState<IBonus[]>([]);
   const [payments, setPayments] = React.useState<IPayment[]>([]);
   const [value, setValue] = React.useState<number>(0);
   const [formValues, setFormValues] = React.useState<IEmployee | null>(null);
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
   React.useEffect(() => {
     const fetchEmployee = async () => {
@@ -72,6 +83,20 @@ const EmployeeDetail = () => {
       console.error("Error updating employee:", error);
     }
   };
+
+  const handleDeleteEmployee = async () => {
+    try {
+      if (id) {
+        await deleteEmployee(id);
+        navigate("/employees");
+      }
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+    }
+  };
+
+  const handleOpenDeleteDialog = () => setOpenDeleteDialog(true);
+  const handleCloseDeleteDialog = () => setOpenDeleteDialog(false);
 
   if (!employee) {
     return <div>Loading...</div>;
@@ -167,8 +192,33 @@ const EmployeeDetail = () => {
               Обновить
             </Button>
           </form>
+          <Button onClick={handleOpenDeleteDialog} color="secondary">
+            Удалить
+          </Button>
         </div>
       )}
+
+      <Dialog
+        open={openDeleteDialog}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="delete-dialog-title"
+      >
+        <DialogTitle id="delete-dialog-title">Удаление сотрудника</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Вы уверены, что хотите удалить этого сотрудника? Это действие
+            необратимо.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog} color="primary">
+            Отмена
+          </Button>
+          <Button onClick={handleDeleteEmployee} color="secondary">
+            Удалить
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
