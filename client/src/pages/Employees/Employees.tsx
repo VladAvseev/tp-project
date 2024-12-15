@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
   Select,
@@ -28,6 +29,14 @@ const Employees = () => {
     salary: 0,
     status: "",
     childs: 0,
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    name: "",
+    position: "",
+    salary: "",
+    status: "",
+    childs: "",
   });
 
   const navigate = useNavigate();
@@ -56,9 +65,36 @@ const Employees = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
+
+    const validatedValue =
+      name === "salary" || name === "childs" ? Number(value) : value;
+
+    let error = "";
+
+    if (
+      (name === "name" || name === "position") &&
+      typeof validatedValue === "string" &&
+      !/^[а-яА-Я\s]+$/.test(validatedValue)
+    ) {
+      error = "Можно использовать только буквы и пробелы";
+    }
+
+    if (
+      name === "salary" &&
+      typeof validatedValue === "number" &&
+      validatedValue <= 0
+    ) {
+      error = "Зарплата должна быть больше 0";
+    }
+
     setNewEmployee((prev) => ({
       ...prev,
-      [name!]: name === "salary" || name === "childs" ? Number(value) : value,
+      [name!]: validatedValue,
+    }));
+
+    setFormErrors((prev) => ({
+      ...prev,
+      [name!]: error,
     }));
   };
 
@@ -72,14 +108,14 @@ const Employees = () => {
 
   const handleCreateEmployee = async () => {
     try {
-      await createEmployee(newEmployee); // Убираем преобразование, данные уже корректного типа
+      await createEmployee(newEmployee);
       setNewEmployee({
         name: "",
         position: "",
         salary: 0,
         status: "",
         childs: 0,
-      }); // Очищаем поля
+      });
       fetchEmployees();
       handleDialogClose();
     } catch (error) {
@@ -123,57 +159,84 @@ const Employees = () => {
       >
         <DialogTitle>Создать сотрудника</DialogTitle>
         <DialogContent>
-          <TextField
-            label="ФИО"
-            name="name"
-            type="text"
-            value={newEmployee.name}
-            onChange={handleTextInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Должность"
-            name="position"
-            type="text"
-            value={newEmployee.position}
-            onChange={handleTextInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Зарплата"
-            name="salary"
-            type="number"
-            value={newEmployee.salary}
-            onChange={handleTextInputChange}
-            fullWidth
-            margin="normal"
-          />
-          <FormControl fullWidth margin="normal">
+          <FormControl fullWidth margin="normal" error={!!formErrors.name}>
+            <TextField
+              label="ФИО"
+              name="name"
+              type="text"
+              value={newEmployee.name}
+              onChange={handleTextInputChange}
+              fullWidth
+              margin="normal"
+            />
+            {formErrors.name && (
+              <FormHelperText>{formErrors.name}</FormHelperText>
+            )}
+          </FormControl>
+
+          <FormControl fullWidth margin="normal" error={!!formErrors.position}>
+            <TextField
+              label="Должность"
+              name="position"
+              type="text"
+              value={newEmployee.position}
+              onChange={handleTextInputChange}
+              fullWidth
+              margin="normal"
+            />
+            {formErrors.position && (
+              <FormHelperText>{formErrors.position}</FormHelperText>
+            )}
+          </FormControl>
+
+          <FormControl fullWidth margin="normal" error={!!formErrors.salary}>
+            <TextField
+              label="Зарплата"
+              name="salary"
+              type="number"
+              value={newEmployee.salary}
+              onChange={handleTextInputChange}
+              fullWidth
+              margin="normal"
+            />
+            {formErrors.salary && (
+              <FormHelperText>{formErrors.salary}</FormHelperText>
+            )}
+          </FormControl>
+
+          <FormControl fullWidth margin="normal" error={!!formErrors.status}>
             <InputLabel id="status-label">Статус</InputLabel>
             <Select
               labelId="status-label"
               name="status"
               value={newEmployee.status}
               onChange={handleSelectChange}
+              fullWidth
             >
               <MenuItem value="Холост">Холост</MenuItem>
               <MenuItem value="Женат">Женат</MenuItem>
               <MenuItem value="Разведен">Разведен</MenuItem>
               <MenuItem value="Вдова/вдовец">Вдова/вдовец</MenuItem>
             </Select>
+            {formErrors.status && (
+              <FormHelperText>{formErrors.status}</FormHelperText>
+            )}
           </FormControl>
 
-          <TextField
-            label="Дети"
-            name="childs"
-            type="number"
-            value={newEmployee.childs}
-            onChange={handleTextInputChange}
-            fullWidth
-            margin="normal"
-          />
+          <FormControl fullWidth margin="normal" error={!!formErrors.childs}>
+            <TextField
+              label="Дети"
+              name="childs"
+              type="number"
+              value={newEmployee.childs}
+              onChange={handleTextInputChange}
+              fullWidth
+              margin="normal"
+            />
+            {formErrors.childs && (
+              <FormHelperText>{formErrors.childs}</FormHelperText>
+            )}
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose} color="secondary">
